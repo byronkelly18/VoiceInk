@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: xcode-27-xlarge
+    runs-on: xcode-27
     timeout-minutes: 90
     steps:
       - name: Checkout
@@ -24,7 +24,7 @@ jobs:
         env:
           # Cap parallel compile jobs to avoid OOM on heavy targets
           # (mlx-swift, LLMkit, swift-crypto) built with -O -whole-module-optimization.
-          IDEBuildOperationMaxNumberOfConcurrentCompileTasks: "3"
+          IDEBuildOperationMaxNumberOfConcurrentCompileTasks: "1"
         run: make local
 
       - name: Zip built app
