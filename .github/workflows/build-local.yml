@@ -1,0 +1,35 @@
+name: Build VoiceInk (local/free)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Show toolchain versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: make local
+        run: make local
+
+      - name: Zip built app
+        run: |
+          cd "$HOME/Downloads"
+          ditto -c -k --sequesterRsrc --keepParent VoiceInk.app VoiceInk.app.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VoiceInk-app
+          path: ~/Downloads/VoiceInk.app.zip
+          retention-days: 14
